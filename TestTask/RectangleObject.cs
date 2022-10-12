@@ -2,21 +2,34 @@
 
 public class RectangleObject : INotifyPropertyChanged
 {
+    private static int CountRect = 0;
+    private int id = 0;
     private int startPointY;
     private int startPointX;
 
     private int height;
     private int width;
 
-    private bool isOld;
 
     private Brush color;
+
+
+    public int Id
+    {
+        get { return id; }
+        init
+        {
+            id = value;
+            OnPropertyChanged();
+        }
+    }
 
     public Brush Color
     {
         get { return color; }
-        set {
-            color = value; 
+        set
+        {
+            color = value;
             OnPropertyChanged();
         }
     }
@@ -31,15 +44,6 @@ public class RectangleObject : INotifyPropertyChanged
         }
     }
 
-    public bool IsOld
-    {
-        get { return isOld; }
-        set
-        {
-            isOld = value;
-            OnPropertyChanged();
-        }
-    }
     public int StartPointX
     {
         get { return startPointX; }
@@ -70,11 +74,11 @@ public class RectangleObject : INotifyPropertyChanged
 
     public RectangleObject(int startPointY, int startPointX, int height, int width, Brush color)
     {
+        id = CountRect++;
         StartPointY = startPointY;
         StartPointX = startPointX;
         Height = height;
         Width = width;
-        IsOld = false;
         Color = color;
     }
 

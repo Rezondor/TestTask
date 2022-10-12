@@ -23,17 +23,22 @@
                     <Canvas/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
+
+            <ItemsControl.Resources>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding StartPointX}" />
+                    <Setter Property="Canvas.Top" Value="{Binding StartPointY}" />
+                </Style>
+                <DataTemplate  DataType="{x:Type local:RectangleObject}">
                     <Rectangle
-                        InkCanvas.Left="{Binding StartPointX}"
-                        InkCanvas.Top="{Binding StartPointY}"
                         Height="{Binding Height}"
                         Width="{Binding Width}"
                         Fill="{Binding Color}"
-                      Stroke="DarkGray" StrokeThickness="1"/>
+                        Stroke="#1C878B" 
+                        StrokeThickness="1"/>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
+            </ItemsControl.Resources>
+
         </ItemsControl>
     </Border>
 </Window>

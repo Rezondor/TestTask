@@ -24,26 +24,27 @@ public class RectangleGenerator
         HeightRange = heightRange;
         WidthRange = widthRange;
         random = new Random();
+
     }
 
     public async Task<RectangleObject> RectangleGenerate()
     {
         await Task.Delay(0);
         int startPointY, startPointX;
-        int height,width;
+        int height, width;
 
-        startPointX = random.Next(WidthRange);
-        width = random.Next(startPointX, WidthRange);
+        startPointX = random.Next(WidthRange - 10);
+        width = random.Next(1, WidthRange - startPointX - 1);
 
-        startPointY = random.Next(HeightRange);
-        height = random.Next(startPointY, HeightRange);
+        startPointY = random.Next(HeightRange - 10);
+        height = random.Next(1, HeightRange - startPointY - 1);
 
-        SolidColorBrush color = new SolidColorBrush(
+        SolidColorBrush color = new(
                 Color.FromArgb(
+                    (byte)random.Next(150, 255),
                     (byte)random.Next(255),
                     (byte)random.Next(255),
-                    (byte)random.Next(255),
-                    255));
+                    (byte)random.Next(255)));
 
         return new RectangleObject(startPointY, startPointX, height, width, color);
     }

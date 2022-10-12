@@ -1,0 +1,45 @@
+﻿<Window x:Class="TestTask.Windows.StartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestTask.Windows"
+        mc:Ignorable="d"
+        Title="Стартовое окно" 
+        Height="300" 
+        Width="300"
+        Background="#030C0C" 
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Border
+        Margin="10"
+        Padding="10"
+        BorderThickness="1"
+        BorderBrush="#1C878B"
+        Background="#091A1D">
+        <StackPanel >
+            <TextBlock 
+                Text="{Binding Value, ElementName=Interval, StringFormat=Интервал - {0:#,###c}}"
+                Foreground="#15b8af" HorizontalAlignment="Center"/>
+            <Slider
+                Name="Interval"
+                Minimum="1000"
+                Maximum="10000"
+                Value="1000"
+                Margin="10"/>
+            <Button 
+                Name="Start" 
+                Click="Start_Click"
+                Content="Старт" 
+                Margin="10" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Padding="3"
+                Background="Transparent"
+                BorderThickness="1"
+                BorderBrush="#1C878b"
+                Foreground="#1C878B"/>
+        </StackPanel>
+       
+    </Border>
+</Window>

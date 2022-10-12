@@ -5,8 +5,8 @@ public class TaskViewModel : INotifyPropertyChanged
     private ObservableCollection<RectangleObject> rectangles;
     private RectangleGenerator generator;
     private int creationInterval;
-    Dictionary<int, List<RectangleObject>> deleteRectengles;
-    private const int COUNTLOOP = 5;
+    List<List<RectangleObject>> deleteRectengles;
+    private const int COUNTLOOP = 4;
     public int CreationInterval
     {
         get { return creationInterval; }
@@ -39,15 +39,15 @@ public class TaskViewModel : INotifyPropertyChanged
     }
 
 
-    public TaskViewModel(int canvasHeight, int canvasWeight)
+    public TaskViewModel(int canvasHeight, int canvasWeight, int interval)
     {
         Rectangles = new ObservableCollection<RectangleObject>();
         Generator = new RectangleGenerator(canvasHeight, canvasWeight);
-        deleteRectengles = new Dictionary<int, List<RectangleObject>>();
-        CreationInterval = 5;
+        deleteRectengles = new List<List<RectangleObject>>();
+        CreationInterval = interval;
         for (int i = 0; i < COUNTLOOP; i++)
         {
-            deleteRectengles.Add(i, new List<RectangleObject>());
+            deleteRectengles.Add(new List<RectangleObject>());
         }
 
         StartGenerateRectangle();
@@ -58,8 +58,10 @@ public class TaskViewModel : INotifyPropertyChanged
     {
         while (true)
         {
-            await Task.Delay(CreationInterval);
+            await UpdateLoop();
+            Task wait = Task.Delay(CreationInterval);
             RectangleObject rectangle = await Generator.RectangleGenerate();
+            await wait;
             await CheckIntersectionRectangles(rectangle, Rectangles);
             Rectangles.Add(rectangle);
         }
@@ -76,22 +78,41 @@ public class TaskViewModel : INotifyPropertyChanged
                 continue;
             }
 
-            for (int i = 0; i < COUNTLOOP; i++)
+            bool isContains = false;
+            foreach (var rectList in deleteRectengles)
             {
-                if (deleteRectengles[i].Contains(item))
+                if (rectList.Contains(item))
                 {
-                    if (i == COUNTLOOP - 1)
-                    {
-                        rectangles.Remove(item);
-                    }
-                    else
-                    {
-                        deleteRectengles[i + 1].Add(item);
-                    }
-                    deleteRectengles[i].Remove(item);
+                    isContains = true;
                     break;
                 }
             }
+
+
+            if (!isContains)
+            {
+                deleteRectengles[0].Add(item);
+            }
+        }
+    }
+
+    private async Task UpdateLoop()
+    {
+        for (int i = COUNTLOOP - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < deleteRectengles[i].Count; j++)
+            {
+                RectangleObject rect = deleteRectengles[i][j];
+                if (i == COUNTLOOP - 1)
+                {
+                    Rectangles.Remove(rect);
+                }
+                else
+                {
+                    deleteRectengles[i + 1].Add(rect);
+                }
+            }
+            deleteRectengles[i].Clear();
         }
     }
 
@@ -104,11 +125,12 @@ public class TaskViewModel : INotifyPropertyChanged
 
         int leftUpX2 = rectangle2.StartPointX;
         int leftUpY2 = rectangle2.StartPointY;
-        int rightDownX2 = leftUpX2 + rectangle1.Width;
-        int rightDownY2 = leftUpY2 + rectangle1.Height;
-        return
-            (leftUpY1 < rightDownY2 ||
-            rightDownY1 > leftUpY2 ||
+        int rightDownX2 = leftUpX2 + rectangle2.Width;
+        int rightDownY2 = leftUpY2 + rectangle2.Height;
+
+        return !(
+            leftUpY1 > rightDownY2 ||
+            rightDownY1 < leftUpY2 ||
             rightDownX1 < leftUpX2 ||
             leftUpX1 > rightDownX2);
     }
